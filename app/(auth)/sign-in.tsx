@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { SafeAreaView, StyleSheet, Image, View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { SafeAreaView, StyleSheet, Image, View, Text, TextInput, TouchableOpacity, Alert, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { router, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -41,50 +41,52 @@ const SignIn = () => {
 
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar style="light" />
-      <View style={styles.header}>
-        <Image
-          style={styles.logo}
-          source={require('../../assets/images/logo.png')}
-          resizeMode="contain"
-        />
-        <Text style={styles.title}>Login</Text>
-      </View>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <SafeAreaView style={styles.container}>
+        <StatusBar style="light" />
+        <View style={styles.header}>
+          <Image
+            style={styles.logo}
+            source={require('../../assets/images/logo.png')}
+            resizeMode="contain"
+          />
+          <Text style={styles.title}>Login</Text>
+        </View>
 
-      <View style={styles.inputContainer}>
-        <Ionicons name="mail-outline" size={24} color="grey" style={styles.icon} />
-        <TextInput
-          placeholder="Email"
-          placeholderTextColor="grey"
-          style={styles.inputTxt}
-          value={email}
-          onChangeText={setEmail}
-          keyboardType="email-address"
-          autoCapitalize="none"
-        />
-      </View>
+        <View style={styles.inputContainer}>
+          <Ionicons name="mail-outline" size={24} color="grey" style={styles.icon} />
+          <TextInput
+            placeholder="Email"
+            placeholderTextColor="grey"
+            style={styles.inputTxt}
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+            autoCapitalize="none"
+          />
+        </View>
 
-      <View style={styles.inputContainer}>
-        <Ionicons name="lock-closed-outline" size={24} color="grey" style={styles.icon} />
-        <TextInput
-          placeholder="Password"
-          placeholderTextColor="grey"
-          style={styles.inputTxt}
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-        />
-      </View>
+        <View style={styles.inputContainer}>
+          <Ionicons name="lock-closed-outline" size={24} color="grey" style={styles.icon} />
+          <TextInput
+            placeholder="Password"
+            placeholderTextColor="grey"
+            style={styles.inputTxt}
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+          />
+        </View>
 
-      <TouchableOpacity onPress={() => router.replace('/(auth)/sign-up')}>
-        <Text style={styles.createAccountTxt}>Create new account</Text>
-      </TouchableOpacity>
+        <TouchableOpacity onPress={() => router.replace('/(auth)/sign-up')}>
+          <Text style={styles.createAccountTxt}>Create new account</Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity onPress={handleLogin} style={styles.loginBtn}>
-        <Text style={styles.loginTxt}>Login</Text>
-      </TouchableOpacity>
-    </SafeAreaView>
+        <TouchableOpacity onPress={handleLogin} style={styles.loginBtn}>
+          <Text style={styles.loginTxt}>Login</Text>
+        </TouchableOpacity>
+      </SafeAreaView>
+    </TouchableWithoutFeedback>
   );
 };
 

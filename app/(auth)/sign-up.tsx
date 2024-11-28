@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { SafeAreaView, StyleSheet, Image, View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { SafeAreaView, StyleSheet, Image, View, Text, TextInput, TouchableOpacity, Alert, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { router } from 'expo-router';
 import { ReactNativeModal } from "react-native-modal";
@@ -103,131 +103,133 @@ const SignUp = () => {
   }
   
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar style="light" />
-          <View style={styles.header}>
-            <Image
-              style={styles.logo}
-              source={require('../../assets/images/logo.png')}
-              resizeMode="contain"
-            />
-            <Text style={styles.title}>Register</Text>
-          </View>
-          <View style={styles.searchBar}>
-            <Ionicons name="person-outline" size={24} color="grey" style={styles.icon} />
-            <TextInput
-              placeholder="Full Name"
-              placeholderTextColor="grey"
-              style={styles.inputTxt}
-              value={fullName}
-              onChangeText={setFullName}
-            />
-          </View>
-          <View style={styles.searchBar}>
-            <Ionicons name="mail-outline" size={24} color="grey" style={styles.icon} />
-            <TextInput
-              placeholder="Email"
-              placeholderTextColor="grey"
-              style={styles.inputTxt}
-              value={email}
-              onChangeText={setEmail}
-            />
-          </View>
-          <View style={styles.searchBar}>
-            <Ionicons name="lock-closed-outline" size={24} color="grey" style={styles.icon} />
-            <TextInput
-              placeholder="Password"
-              placeholderTextColor="grey"
-              style={styles.inputTxt}
-              value={password}
-              secureTextEntry
-              onChangeText={setPassword}
-            />
-          </View>
-          <View style={styles.searchBar}>
-            <Ionicons name="lock-closed-outline" size={24} color="grey" style={styles.icon} />
-            <TextInput
-              placeholder="Confirm Password"
-              placeholderTextColor="grey"
-              style={styles.inputTxt}
-              value={confirmPassword}
-              secureTextEntry
-              onChangeText={setConfirmPassword}
-            />
-          </View>
-          <TouchableOpacity onPress={()=>router.replace('/(auth)/sign-in')}>
-            <Text style={styles.alreadyHaveTxt}>Already have an Account?</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={handleRegister} style={styles.registerBtn}>
-            <Text style={styles.registerTxt}>Register</Text>
-          </TouchableOpacity>
-          
-          
-
-          <ReactNativeModal 
-          isVisible={verification.state === 'pending'}
-          onModalHide={()=> {
-            if( verification.state === 'success') setShowSuccessModal(true)
-          }
-          }
-          >
-             <View className="bg-[#1f1f1f] px-7 py-9 rounded-2xl min-h-[300px]">
-            <Text className="font-JakartaExtraBold text-white text-2xl mb-2">
-              Verification
-            </Text>
-            <Text className="font-Jakarta text-white mb-5">
-              We've sent a verification code to {email}.
-            </Text>
-            <Text className='mb-2 font-JakartaBold text-2xl text-white'> Code </Text>
-            <View style={styles.modalInputBar}>
-            <Ionicons name="lock-closed-outline" size={24} color="white" style={styles.icon} />
-            <TextInput
-              placeholder="12345"
-              placeholderTextColor="gray"
-              style={styles.modalInputTxt}
-              value={verification.code}
-              keyboardType="numeric"
-              onChangeText={(code) =>
-                setVerification({ ...verification, code })
-              }
-            />
-          </View>
-
-            {verification.error && (
-              <Text className="text-red-500 text-sm mt-1">
-                {verification.error}
-              </Text>
-            )}
-            <CustomButton
-              title="Verify Email"
-              onPress={onPressVerify}
-              className="mt-5 bg-success-500"
-            />
-          </View>
-
-          </ReactNativeModal>
-          
-          <ReactNativeModal isVisible={showSuccessModal}>
-            <View className="bg-[#1f1f1f] px-7 py-9 rounded-2xl min-h-[300px]">
-              <Image source={images.check} className="w-[110px] h-[110px] mx-auto my-5"/>
-            
-            <Text className='text-3xl text-white font-JakartaBold text-center'>
-              Verified
-            </Text>
-            
-            <Text className='text-base text-white font-Jakarta text-center mt-2'>
-              You have successfully verified your account.
-            </Text>
-            
-            <CustomButton 
-            title='Browse Home'
-            onPress={()=>router.push('/(root)/(tabs)/home')}
-            className='mt-5'
-            />
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <SafeAreaView style={styles.container}>
+        <StatusBar style="light" />
+            <View style={styles.header}>
+              <Image
+                style={styles.logo}
+                source={require('../../assets/images/logo.png')}
+                resizeMode="contain"
+              />
+              <Text style={styles.title}>Register</Text>
             </View>
-          </ReactNativeModal>
-  
-    </SafeAreaView>
+            <View style={styles.searchBar}>
+              <Ionicons name="person-outline" size={24} color="grey" style={styles.icon} />
+              <TextInput
+                placeholder="Full Name"
+                placeholderTextColor="grey"
+                style={styles.inputTxt}
+                value={fullName}
+                onChangeText={setFullName}
+              />
+            </View>
+            <View style={styles.searchBar}>
+              <Ionicons name="mail-outline" size={24} color="grey" style={styles.icon} />
+              <TextInput
+                placeholder="Email"
+                placeholderTextColor="grey"
+                style={styles.inputTxt}
+                value={email}
+                onChangeText={setEmail}
+              />
+            </View>
+            <View style={styles.searchBar}>
+              <Ionicons name="lock-closed-outline" size={24} color="grey" style={styles.icon} />
+              <TextInput
+                placeholder="Password"
+                placeholderTextColor="grey"
+                style={styles.inputTxt}
+                value={password}
+                secureTextEntry
+                onChangeText={setPassword}
+              />
+            </View>
+            <View style={styles.searchBar}>
+              <Ionicons name="lock-closed-outline" size={24} color="grey" style={styles.icon} />
+              <TextInput
+                placeholder="Confirm Password"
+                placeholderTextColor="grey"
+                style={styles.inputTxt}
+                value={confirmPassword}
+                secureTextEntry
+                onChangeText={setConfirmPassword}
+              />
+            </View>
+            <TouchableOpacity onPress={()=>router.replace('/(auth)/sign-in')}>
+              <Text style={styles.alreadyHaveTxt}>Already have an Account?</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleRegister} style={styles.registerBtn}>
+              <Text style={styles.registerTxt}>Register</Text>
+            </TouchableOpacity>
+            
+            
+
+            <ReactNativeModal 
+            isVisible={verification.state === 'pending'}
+            onModalHide={()=> {
+              if( verification.state === 'success') setShowSuccessModal(true)
+            }
+            }
+            >
+              <View className="bg-[#1f1f1f] px-7 py-9 rounded-2xl min-h-[300px]">
+              <Text className="font-JakartaExtraBold text-white text-2xl mb-2">
+                Verification
+              </Text>
+              <Text className="font-Jakarta text-white mb-5">
+                We've sent a verification code to {email}.
+              </Text>
+              <Text className='mb-2 font-JakartaBold text-2xl text-white'> Code </Text>
+              <View style={styles.modalInputBar}>
+              <Ionicons name="lock-closed-outline" size={24} color="white" style={styles.icon} />
+              <TextInput
+                placeholder="12345"
+                placeholderTextColor="gray"
+                style={styles.modalInputTxt}
+                value={verification.code}
+                keyboardType="numeric"
+                onChangeText={(code) =>
+                  setVerification({ ...verification, code })
+                }
+              />
+            </View>
+
+              {verification.error && (
+                <Text className="text-red-500 text-sm mt-1">
+                  {verification.error}
+                </Text>
+              )}
+              <CustomButton
+                title="Verify Email"
+                onPress={onPressVerify}
+                className="mt-5 bg-success-500"
+              />
+            </View>
+
+            </ReactNativeModal>
+            
+            <ReactNativeModal isVisible={showSuccessModal}>
+              <View className="bg-[#1f1f1f] px-7 py-9 rounded-2xl min-h-[300px]">
+                <Image source={images.check} className="w-[110px] h-[110px] mx-auto my-5"/>
+              
+              <Text className='text-3xl text-white font-JakartaBold text-center'>
+                Verified
+              </Text>
+              
+              <Text className='text-base text-white font-Jakarta text-center mt-2'>
+                You have successfully verified your account.
+              </Text>
+              
+              <CustomButton 
+              title='Browse Home'
+              onPress={()=>router.push('/(root)/(tabs)/home')}
+              className='mt-5'
+              />
+              </View>
+            </ReactNativeModal>
+    
+      </SafeAreaView>
+    </TouchableWithoutFeedback>
   );
 };
 

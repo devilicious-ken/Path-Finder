@@ -1,57 +1,87 @@
-import { ScrollView, StyleSheet, Text, Image, View, TouchableOpacity, TextInput } from 'react-native';
-import React from 'react';
+import { ScrollView, StyleSheet, Text, Image, View, TouchableOpacity, ActivityIndicator } from 'react-native';
+import React, { useState, useEffect } from 'react';
 import { jobs } from '@/constants';
-import { Ionicons } from '@expo/vector-icons';
+import { router } from 'expo-router';
 
-type Props = {};
+type Props = {
+  searchQuery: string;
+};
 
-const Discover = (props: Props) => {
+const Discover = ({ searchQuery }: Props) => {
+  const [isLoading, setIsLoading] = useState(true); // Add loading state
+  const [filteredJobs, setFilteredJobs] = useState(jobs);
+
+  useEffect(() => {
+    // Simulating a delay for loading data
+    setIsLoading(true);
+    setTimeout(() => {
+      const filtered = jobs.filter(
+        (job) =>
+          job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          job.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          job.location.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredJobs(filtered);
+      setIsLoading(false); // Set loading to false after data is fetched
+    }, 1000); // Simulated delay of 1 second
+  }, [searchQuery]);
+
   // Map job type to specific background colors
   const getCardColor = (jobType: string) => {
     switch (jobType) {
       case 'Fulltime':
-        return '#5424FD'; // Purple for full-time
+        return '#017b2d'; // Purple for full-time
       case 'Part-time':
-        return '#FF4B4B'; // Red for part-time
+        return '#F5001E'; // Red for part-time
       case 'Contract':
-        return '#FFC107'; // Yellow for contract
+        return '#420163'; // Yellow for contract
       default:
         return '#2b2b2b'; // Default dark gray
     }
   };
 
   return (
-
     <ScrollView style={styles.container}>
-      {jobs.map((job) => (
-        <View key={job.id} style={styles.cardWrapper}>
-          <View style={[styles.jobCard, { backgroundColor: getCardColor(job.type) }]}>
-            <Image source={{ uri: job.logo }} style={styles.logo} />
-            <View style={styles.jobContent}>
-              <Text style={styles.jobTitle}>{job.title}</Text>
-              <Text style={styles.jobCompany}>{job.company}</Text>
-              <View style={styles.metadata}>
-                <Text style={styles.metadataItem}>{job.location}</Text>
-                <Text style={styles.metadataItem}>• {job.experience}</Text>
-                <Text style={styles.metadataItem}>• {job.type}</Text>
+      {isLoading ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#fff" />
+          <Text style={styles.loadingText}>Loading jobs...</Text>
+        </View>
+      ) : filteredJobs.length > 0 ? (
+        filteredJobs.map((job) => (
+          <View key={job.id} style={styles.cardWrapper}>
+            <View style={[styles.jobCard, { backgroundColor: getCardColor(job.type) }]}>
+              <Image source={{ uri: job.logo }} style={styles.logo} />
+              <View style={styles.jobContent}>
+                <Text style={styles.jobTitle}>{job.title}</Text>
+                <Text style={styles.jobCompany}>{job.company}</Text>
+                <View style={styles.metadata}>
+                  <Text style={styles.metadataItem}>{job.location}</Text>
+                  <Text style={styles.metadataItem}>• {job.experience}</Text>
+                  <Text style={styles.metadataItem}>• {job.type}</Text>
+                </View>
+                <Text style={styles.description} numberOfLines={2}>
+                  {job.description}
+                </Text>
+                <TouchableOpacity
+                  onPress={() => router.push({ pathname: '/job-details', params: { job: JSON.stringify(job) } })}
+                  style={styles.viewButton}
+                >
+                  <Text style={styles.viewButtonText}>View</Text>
+                </TouchableOpacity>
               </View>
-              <Text style={styles.description} numberOfLines={2}>
-                {job.description}
-              </Text>
-              <TouchableOpacity style={styles.viewButton}>
-                <Text style={styles.viewButtonText}>View</Text>
-              </TouchableOpacity>
+            </View>
+            {/* White strip at the bottom */}
+            <View style={styles.whiteFooter}>
+              <Text style={styles.salary}>{job.salary}</Text>
+              <Text style={styles.posted}>{job.posted}</Text>
             </View>
           </View>
-          {/* White strip at the bottom */}
-          <View style={styles.whiteFooter}>
-            <Text style={styles.salary}>{job.salary}</Text>
-            <Text style={styles.posted}>{job.posted}</Text>
-          </View>
-        </View>
-      ))}
+        ))
+      ) : (
+        <Text style={styles.noResults}>No jobs found</Text>
+      )}
     </ScrollView>
-
   );
 };
 
@@ -61,7 +91,18 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#1f1f1f',
-    bottom: 15
+    bottom: 15,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 100, // Adjust position to your liking
+  },
+  loadingText: {
+    color: '#fff',
+    marginTop: 10,
+    fontSize: 16,
   },
   cardWrapper: {
     marginBottom: 15,
@@ -80,35 +121,37 @@ const styles = StyleSheet.create({
     top: 15,
     left: 15,
   },
-  jobContent: {
-
-  },
+  jobContent: {},
   jobTitle: {
     color: '#FFFFFF',
     fontSize: 18,
     fontWeight: 'bold',
-    marginLeft: 70
+    marginLeft: 70,
   },
   jobCompany: {
     color: '#E0E0E0',
     fontSize: 14,
     marginVertical: 5,
-    marginLeft: 70
+    marginLeft: 70,
   },
   metadata: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     marginVertical: 5,
+    gap: 4,
+    top: 10,
   },
   metadataItem: {
     color: '#FFFFFF',
-    backgroundColor: '#3E3E3E',
+    backgroundColor: '#ffffff30',
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 15,
     fontSize: 12,
     marginRight: 5,
     marginBottom: 5,
+    borderWidth: 1,
+    borderColor: 'white',
   },
   description: {
     color: '#E0E0E0',
@@ -147,5 +190,11 @@ const styles = StyleSheet.create({
   posted: {
     color: '#333333',
     fontSize: 12,
+  },
+  noResults: {
+    color: '#FFFFFF',
+    textAlign: 'center',
+    marginTop: 20,
+    fontSize: 16,
   },
 });

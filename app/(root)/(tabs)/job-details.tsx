@@ -1,18 +1,43 @@
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
-import { ReactElement, JSXElementConstructor, ReactNode, ReactPortal, Key } from 'react';
+import { ReactElement, JSXElementConstructor, ReactNode, ReactPortal, Key, useState, useEffect } from 'react';
 import { ScrollView, StyleSheet, Image, Text, TouchableOpacity, View } from 'react-native';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const JobDetails = () => {
   const { job } = useLocalSearchParams();
-
-  // Ensure `job` is a string
   const jobDetails = typeof job === 'string' ? JSON.parse(job) : null;
 
-  if (!jobDetails) {
-    return <Text>Error: Job details not found.</Text>;
+
+  const [saved, setSaved] = useState(false);
+
+  useEffect(() => {
+    const checkIfSaved = async () => {
+      const savedJobs = JSON.parse((await AsyncStorage.getItem('savedJobs')) || '[]');
+      const isSaved = savedJobs.some((savedJob) => savedJob.id === jobDetails.id);
+      setSaved(isSaved);
+    };
+  
+    checkIfSaved();
+  }, []);
+  
+
+
+const toggleSave = async () => {
+  const savedJobs = JSON.parse((await AsyncStorage.getItem('savedJobs')) || '[]');
+  const isSaved = savedJobs.some((savedJob) => savedJob.id === jobDetails.id);
+
+  if (isSaved) {
+    const updatedJobs = savedJobs.filter((savedJob) => savedJob.id !== jobDetails.id);
+    await AsyncStorage.setItem('savedJobs', JSON.stringify(updatedJobs));
+  } else {
+    savedJobs.push(jobDetails);
+    await AsyncStorage.setItem('savedJobs', JSON.stringify(savedJobs));
   }
+
+  setSaved(!isSaved); // Update UI state
+};
+
 
   const getCardColor = (jobType: string) => {
     switch (jobType) {
@@ -71,14 +96,17 @@ const JobDetails = () => {
       </View>
 
       <View style={styles.actions}>
-        <TouchableOpacity style={styles.saveButton}>
-          <Text style={styles.saveButtonText}>Save</Text>
-        </TouchableOpacity>
-        <TouchableOpacity 
-        onPress={()=>router.replace('/applying')}
-        style={styles.applyButton}>
-          <Text style={styles.applyButtonText}>Apply Now →</Text>
-        </TouchableOpacity>
+      <TouchableOpacity onPress={toggleSave} style={styles.saveButton}>
+  <Text style={styles.saveButtonText}>{saved ? 'Saved' : 'Save'}</Text>
+</TouchableOpacity>
+
+    <TouchableOpacity
+      onPress={() => router.push(`/applying?jobId=${jobDetails.id}&title=${jobDetails.title}&company=${jobDetails.company}&location=${jobDetails.location}`)}
+      style={styles.applyButton}
+    >
+      <Text style={styles.applyButtonText}>Apply Now →</Text>
+    </TouchableOpacity>
+
       </View>
     </ScrollView>
   );

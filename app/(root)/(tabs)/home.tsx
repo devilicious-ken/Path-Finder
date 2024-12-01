@@ -95,7 +95,7 @@ export default function Page() {
             </TouchableOpacity>
           </View>
 
-          <ScrollView style={styles.contentContainer}>{renderContent()}</ScrollView>
+          <View style={styles.contentContainer}>{renderContent()}</View>
         </SignedIn>
 
         <SignedOut>

@@ -4,8 +4,12 @@ import { Ionicons } from '@expo/vector-icons';
 import * as DocumentPicker from 'expo-document-picker';
 import { useRouter } from 'expo-router';
 import Modal from 'react-native-modal';
+import { useLocalSearchParams } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Applying = () => {
+  const { jobId, title, company, location } = useLocalSearchParams();
+
   const [fileName, setFileName] = useState('');
   const [fileSize, setFileSize] = useState('');
   const [isUploaded, setIsUploaded] = useState(false);
@@ -47,15 +51,33 @@ const Applying = () => {
     setIsUploaded(false);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!fullName || !email || !isUploaded) {
       setIsErrorModalVisible(true);
       return;
     }
-
-    setIsSuccessModalVisible(true);
+  
+    try {
+      // Get existing applied jobs
+      const appliedJobs = JSON.parse((await AsyncStorage.getItem('appliedJobs')) || '[]');
+  
+      // If the job ID isn't already in the list, add it
+      if (!appliedJobs.includes(jobId)) {
+        appliedJobs.push({
+          jobId,
+          title,
+          company,
+          location,
+        });
+        await AsyncStorage.setItem('appliedJobs', JSON.stringify(appliedJobs));
+      }
+  
+      setIsSuccessModalVisible(true);
+    } catch (error) {
+      console.error('Error saving applied job:', error);
+    }
   };
-
+  
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
     <View style={styles.container}>
@@ -155,7 +177,7 @@ const Applying = () => {
             style={styles.doneButton}
             onPress={() => {
               setIsSuccessModalVisible(false);
-              router.back()
+              router.push('/home')
               // Add navigation or other actions here
             }}
           >
@@ -176,6 +198,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#121212',
     padding: 20,
   },
+  jobTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },  
   backButton: {
     flexDirection: 'row',
     alignItems: 'center',

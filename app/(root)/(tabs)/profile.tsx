@@ -23,9 +23,10 @@ const ProfilePage = () => {
           <Ionicons name="arrow-back" size={24} color="white" />
         <Text style={styles.headerText}>Profile</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.btn}>
-        <Text 
+        <TouchableOpacity 
         onPress={handleSignOut}
+        style={styles.btn}>
+        <Text 
         style={styles.logoutText}>Logout</Text>
           <Ionicons name="log-out-outline" size={24} color="#FC5D5E" />
         </TouchableOpacity>

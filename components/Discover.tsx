@@ -50,7 +50,8 @@ const Discover = ({ searchQuery }: Props) => {
       ) : filteredJobs.length > 0 ? (
         filteredJobs.map((job) => (
           <View key={job.id} style={styles.cardWrapper}>
-            <View style={[styles.jobCard, { backgroundColor: getCardColor(job.type) }]}>
+            <TouchableOpacity onPress={() => router.push({ pathname: '/job-details', params: { job: JSON.stringify(job) } })}>
+              <View style={[styles.jobCard, { backgroundColor: getCardColor(job.type) }]}>
               <Image source={{ uri: job.logo }} style={styles.logo} />
               <View style={styles.jobContent}>
                 <Text style={styles.jobTitle}>{job.title}</Text>
@@ -70,12 +71,14 @@ const Discover = ({ searchQuery }: Props) => {
                   <Text style={styles.viewButtonText}>View</Text>
                 </TouchableOpacity>
               </View>
-            </View>
+              </View>
+            
             {/* White strip at the bottom */}
-            <View style={styles.whiteFooter}>
-              <Text style={styles.salary}>{job.salary}</Text>
-              <Text style={styles.posted}>{job.posted}</Text>
-            </View>
+              <View style={styles.whiteFooter}>
+                <Text style={styles.salary}>{job.salary}</Text>
+                <Text style={styles.posted}>{job.posted}</Text>
+              </View>
+            </TouchableOpacity>
           </View>
         ))
       ) : (

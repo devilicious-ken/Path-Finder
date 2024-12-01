@@ -2,6 +2,10 @@
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
+
+## Image
+![image alt](https://github.com/devilicious-ken/Path-Finder/blob/main/assets/images/pathfinder.png?raw=true)
+
 ## Get started
 
 1. Install dependencies
